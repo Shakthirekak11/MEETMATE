@@ -27,6 +27,7 @@ mom_docx_file = "minutes_of_meeting.docx"
 transcript_file= "transcript.docx"
 
 app = Flask(__name__)
+app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024
 OUTPUT_DIR = r".\meeting assistant ai"
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
