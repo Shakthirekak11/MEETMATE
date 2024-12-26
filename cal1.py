@@ -4,15 +4,15 @@ import sys
 from datetime import datetime, timedelta
 from upstash_redis import Redis
 
-file = open('keys.json', 'r')
-keys = json.load(file)
-upstash_token = keys['UPSTASH_REDIS_REST_TOKEN']
-subscription_key = keys['subscription_key_1']
-openai_api_key = keys['openai.api_key']
+UPSTASH_REDIS_REST_TOKEN = os.getenv("UPSTASH_REDIS_REST_TOKEN")
+SUBSCRIPTION_KEY = os.getenv("SUBSCRIPTION_KEY_1")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+if not UPSTASH_REDIS_REST_TOKEN or not SUBSCRIPTION_KEY or not OPENAI_API_KEY:
+    raise EnvironmentError("One or more required environment variables are missing.")
 
 
-UPSTASH_REDIS_REST_URL="https://fine-swift-52766.upstash.io"
-UPSTASH_REDIS_REST_TOKEN = upstash_token
+UPSTASH_REDIS_REST_URL = os.getenv("UPSTASH_REDIS_REST_URL", "https://fine-swift-52766.upstash.io")
 redis_client = Redis(url=UPSTASH_REDIS_REST_URL, token=UPSTASH_REDIS_REST_TOKEN)
 
 # Check and install dependencies dynamically
