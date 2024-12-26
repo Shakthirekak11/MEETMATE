@@ -9,13 +9,15 @@ from flask import Flask, send_from_directory
 import re
 from upstash_redis import Redis
 from docx import Document
+from dotenv import load_dotenv
 
 UPSTASH_REDIS_REST_TOKEN = os.getenv("UPSTASH_REDIS_REST_TOKEN")
-SUBSCRIPTION_KEY = os.getenv("SUBSCRIPTION_KEY")
+SUBSCRIPTION_KEY = os.getenv("SUBSCRIPTION_KEY_1")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 if not UPSTASH_REDIS_REST_TOKEN or not SUBSCRIPTION_KEY or not OPENAI_API_KEY:
     raise EnvironmentError("One or more required environment variables are missing.")
+
 
 UPSTASH_REDIS_REST_URL = os.getenv("UPSTASH_REDIS_REST_URL", "https://fine-swift-52766.upstash.io")
 redis_client = Redis(url=UPSTASH_REDIS_REST_URL, token=UPSTASH_REDIS_REST_TOKEN)
@@ -207,7 +209,7 @@ def save_mom_to_docx(minutes_text):
         return None
 
 # Define the folder where the files will be stored
-app.config['UPLOAD_FOLDER'] = 'uploads/'
+app.config['UPLOAD_FOLDER'] = '/tmp/uploads/'
 
 @app.route('/download_transcript')
 def download_transcript():
