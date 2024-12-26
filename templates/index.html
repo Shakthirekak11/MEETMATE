@@ -118,10 +118,7 @@
                         <h3 for="Attendees" class="block text-sm font-medium text-gray-400 mb-2" style="font-family: 'Meutas', sans-serif; font-weight: 300;">Attendees:</h3>
                         <!-- Modified code to display dynamic Attendees -->
 <div id="Attendees" style="height: 60px;" class="bg-gray-700 p-4 overflow-auto rounded-lg text-gray-300" style="font-family: 'Meutas', sans-serif; font-weight: normal;">
-    {{ meeting_info.attendees }}<!---<br>
-        {% for i in range(1, meeting_info.attendees|int + 1) %}
-            Speaker {{ i }}<br>
-        {% endfor %}!--->
+    {{ meeting_info.attendees }}
 </div><br>
 
 <h3 for="Summary" class="block text-sm font-medium text-gray-400 mb-2" style="font-family: 'Meutas', sans-serif; font-weight: 300;">Summary:</h3>
