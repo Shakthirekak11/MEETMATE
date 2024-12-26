@@ -291,7 +291,6 @@ def generate_mom_with_gpt(transcription_text, datetime_now, num_attendees):
 
 # Step 5: Main Workflow
 def main(audio_file_name):
-    #audio_file_name = sys.argv[1]
     print("Calling Speech-to-Text API...")
     response_data = get_speech_to_text_response(audio_file_name)
     if not response_data:
@@ -342,6 +341,6 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage: python diarize_MOM.py <audio_file_path>")
         sys.exit(1)
-    
+    audio_file_name = sys.argv[1]
     # Get the file path from the command-line argument
-    main()
+    main(audio_file_name)
