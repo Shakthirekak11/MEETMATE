@@ -268,17 +268,24 @@ def process_audio_file(file_path):
     """
     try:
         if not os.path.exists(file_path):
-            raise FileNotFoundError(f"The file at {file_path} does not exist.")
+            app.logger.error(f"File path does not exist: {file_path}")
+            return None
 
-        # Run the external script to process the file
-        result = subprocess.run(
-            [sys.executable, "diarize_MOM.py", file_path],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True
-        )
-        logging.debug(f"Script STDOUT: {result.stdout}")
-        logging.debug(f"Script STDERR: {result.stderr}")
+        try:
+            result = subprocess.run(
+                command,
+                shell=True,
+                check=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                timeout=60
+            )
+        except subprocess.CalledProcessError as e:
+            app.logger.error(f"Subprocess failed: {e.stderr.decode()}")
+            return None
+        except subprocess.TimeoutExpired:
+            app.logger.error("Subprocess timed out.")
+            return None
 
         if result.returncode != 0:
             raise RuntimeError(f"Script failed with return code {result.returncode}")
