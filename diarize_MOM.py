@@ -9,6 +9,7 @@ from cal1 import create_meeting, authenticate_user
 import dateparser 
 from upstash_redis import Redis
 import sys
+import os
 
 UPSTASH_REDIS_REST_TOKEN = os.getenv("UPSTASH_REDIS_REST_TOKEN")
 SUBSCRIPTION_KEY = os.getenv("SUBSCRIPTION_KEY")
