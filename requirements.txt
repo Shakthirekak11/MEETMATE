@@ -1,7 +1,7 @@
 dateparser
 google_api_python_client
 google_auth_oauthlib
-openai==1.58.1
+openai==0.28
 protobuf
 python_docx
 Requests
