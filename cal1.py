@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from upstash_redis import Redis
 
 UPSTASH_REDIS_REST_TOKEN = os.getenv("UPSTASH_REDIS_REST_TOKEN")
-SUBSCRIPTION_KEY = os.getenv("SUBSCRIPTION_KEY_1")
+SUBSCRIPTION_KEY = os.getenv("SUBSCRIPTION_KEY")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 if not UPSTASH_REDIS_REST_TOKEN or not SUBSCRIPTION_KEY or not OPENAI_API_KEY:
