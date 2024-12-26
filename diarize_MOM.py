@@ -23,10 +23,10 @@ redis_client = Redis(url=UPSTASH_REDIS_REST_URL, token=UPSTASH_REDIS_REST_TOKEN)
 
 # Azure Speech-to-Text Configuration
 url_1 = "https://eastus2.api.cognitive.microsoft.com/speechtotext/transcriptions:transcribe?api-version=2024-11-15"
-subscription_key_1 = subscription_key
+subscription_key_1 = SUBSCRIPTION_KEY
 
 # OpenAI GPT Configuration
-openai.api_key = openai_api_key
+openai.api_key = OPENAI_API_KEY
 openai.api_base = "https://api.openai.com/v1"
 
 def get_redis_client():
