@@ -8,3 +8,4 @@ Requests
 requests_toolbelt
 upstash_redis
 Flask
+gunicorn
