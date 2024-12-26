@@ -29,35 +29,45 @@ except ImportError:
 
 # --- Constants ---
 SCOPES = ['https://www.googleapis.com/auth/calendar']
-CREDENTIALS_FILE = r".\prefinal\credentials.json"
-DEFAULT_DURATION_MINUTES = 60  # Default meeting duration is set to 1 hour
+# Replace the path to the credentials file with an environment variable
+CREDENTIALS_FILE = os.getenv("GCP_CREDENTIALS_JSON")
 
+DEFAULT_DURATION_MINUTES = 60  # Default meeting duration is set to 1 hour
 def authenticate_user():
     """
     Authenticate the user via OAuth2 and return a Google Calendar API service object.
-    Saves token for future runs.
     """
     creds = None
+
+    # Check if the credentials JSON is provided in the environment variable
+    credentials_json = os.getenv("GCP_CREDENTIALS_JSON")
+    
+    if credentials_json:
+        # Write the credentials JSON to a file so that the Google API can use it
+        with open('credentials.json', 'w') as cred_file:
+            cred_file.write(credentials_json)
+    
     # Check for existing token
     if os.path.exists("token.json"):
         creds = Credentials.from_authorized_user_file("token.json", SCOPES)
 
-    # If no token is available, prompt for login
+    # If no token is available or it's invalid, prompt for login
     if not creds or not creds.valid:
-        if not os.path.exists(CREDENTIALS_FILE):
-            print(f"Error: '{CREDENTIALS_FILE}' file not found. Please provide OAuth credentials.")
+        if not os.path.exists("credentials.json"):
+            print(f"Error: 'credentials.json' file not found. Please provide OAuth credentials.")
             sys.exit()
 
-        flow = InstalledAppFlow.from_client_secrets_file(CREDENTIALS_FILE, SCOPES)
+        flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
         creds = flow.run_local_server(port=0)
 
         # Save token for future runs
         with open("token.json", "w") as token_file:
             token_file.write(creds.to_json())
 
-    # Build the Calendar API service correctly
+    # Build the Calendar API service
     service = build("calendar", "v3", credentials=creds)
     return service
+
 
 def create_meeting(service, summary, description, start_time, time_zone):
     print(f"Start Time Received: {start_time}")
