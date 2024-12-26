@@ -37,7 +37,7 @@ except ImportError:
 # --- Constants ---
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 # Replace the path to the credentials file with an environment variable
-CREDENTIALS_FILE = os.getenv("GCP_CREDENTIALS_JSON")
+CREDENTIALS_JSON = os.getenv("GCP_CREDENTIALS_JSON")
 if not CREDENTIALS_JSON:
     raise EnvironmentError("GCP_CREDENTIALS_JSON environment variable is missing.")
     
