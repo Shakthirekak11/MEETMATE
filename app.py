@@ -9,6 +9,7 @@ from flask import Flask, send_from_directory
 import re
 from upstash_redis import Redis
 from docx import Document
+import diarize_MOM
 
 UPSTASH_REDIS_REST_TOKEN = os.getenv("UPSTASH_REDIS_REST_TOKEN")
 SUBSCRIPTION_KEY = os.getenv("SUBSCRIPTION_KEY")
@@ -268,8 +269,7 @@ def process_audio_file(file_path):
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"The file at {file_path} does not exist.")
         
-        # Run the external script to process the file
-        subprocess.run(["python", "diarize_MOM.py", file_path])
+        diarize_MOM.main(file_path)
         meeting_info = get_meeting_info_from_redis()
         return meeting_info
     except Exception as e:
