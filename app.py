@@ -17,7 +17,6 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 if not UPSTASH_REDIS_REST_TOKEN or not SUBSCRIPTION_KEY or not OPENAI_API_KEY:
     raise EnvironmentError("One or more required environment variables are missing.")
 
-
 UPSTASH_REDIS_REST_URL = os.getenv("UPSTASH_REDIS_REST_URL", "https://fine-swift-52766.upstash.io")
 redis_client = Redis(url=UPSTASH_REDIS_REST_URL, token=UPSTASH_REDIS_REST_TOKEN)
 
@@ -26,13 +25,9 @@ mom_docx_file = "minutes_of_meeting.docx"
 transcript_file= "transcript.docx"
 
 app = Flask(__name__)
-OUTPUT_DIR = r".\prefinal"
+OUTPUT_DIR = r".\meeting assistant ai"
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
-
-@app.route('/favicon.ico')
-def favicon():
-    return send_from_directory(app.static_folder, 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 @app.route("/")
 def home():
@@ -268,34 +263,15 @@ def process_audio_file(file_path):
     """
     try:
         if not os.path.exists(file_path):
-            app.logger.error(f"File path does not exist: {file_path}")
-            return None
-
-        try:
-            result = subprocess.run(
-                [sys.executable, "diarize_MOM.py", file_path],
-                shell=True,
-                check=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                timeout=60
-            )
-        except subprocess.CalledProcessError as e:
-            app.logger.error(f"Subprocess failed: {e.stderr.decode()}")
-            return None
-        except subprocess.TimeoutExpired:
-            app.logger.error("Subprocess timed out.")
-            return None
-
-        if result.returncode != 0:
-            raise RuntimeError(f"Script failed with return code {result.returncode}")
-
+            raise FileNotFoundError(f"The file at {file_path} does not exist.")
+        
+        # Run the external script to process the file
+        subprocess.run(["python", "diarize_MOM.py", file_path])
         meeting_info = get_meeting_info_from_redis()
         return meeting_info
     except Exception as e:
         logging.error(f"Error processing audio file: {e}")
         return {"error": f"Error processing audio file: {str(e)}"}
-
 
 @app.route('/schedule', methods=['GET', 'POST'])
 def schedule_meeting():
