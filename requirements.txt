@@ -1,5 +1,4 @@
 dateparser==1.2.0
-Flask==3.1.0
 google_api_python_client==2.151.0
 google_auth_oauthlib==0.4.6
 openai==0.28.0
