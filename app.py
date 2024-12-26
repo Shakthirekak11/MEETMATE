@@ -273,7 +273,7 @@ def process_audio_file(file_path):
 
         try:
             result = subprocess.run(
-                command,
+                [sys.executable, "diarize_MOM.py", file_path],
                 shell=True,
                 check=True,
                 stdout=subprocess.PIPE,
