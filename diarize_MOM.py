@@ -290,8 +290,8 @@ def generate_mom_with_gpt(transcription_text, datetime_now, num_attendees):
         return None
 
 # Step 5: Main Workflow
-def main():
-    audio_file_name = sys.argv[1]
+def main(audio_file_name):
+    #audio_file_name = sys.argv[1]
     print("Calling Speech-to-Text API...")
     response_data = get_speech_to_text_response(audio_file_name)
     if not response_data:
