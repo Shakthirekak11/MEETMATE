@@ -269,14 +269,26 @@ def process_audio_file(file_path):
     try:
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"The file at {file_path} does not exist.")
-        
+
         # Run the external script to process the file
-        subprocess.run(["python", "diarize_MOM.py", file_path])
+        result = subprocess.run(
+            [sys.executable, "diarize_MOM.py", file_path],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True
+        )
+        logging.debug(f"Script STDOUT: {result.stdout}")
+        logging.debug(f"Script STDERR: {result.stderr}")
+
+        if result.returncode != 0:
+            raise RuntimeError(f"Script failed with return code {result.returncode}")
+
         meeting_info = get_meeting_info_from_redis()
         return meeting_info
     except Exception as e:
         logging.error(f"Error processing audio file: {e}")
         return {"error": f"Error processing audio file: {str(e)}"}
+
 
 @app.route('/schedule', methods=['GET', 'POST'])
 def schedule_meeting():
