@@ -8,8 +8,15 @@ UPSTASH_REDIS_REST_TOKEN = os.getenv("UPSTASH_REDIS_REST_TOKEN")
 SUBSCRIPTION_KEY = os.getenv("SUBSCRIPTION_KEY")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-if not UPSTASH_REDIS_REST_TOKEN or not SUBSCRIPTION_KEY or not OPENAI_API_KEY:
-    raise EnvironmentError("One or more required environment variables are missing.")
+if not UPSTASH_REDIS_REST_TOKEN:
+    raise EnvironmentError("UPSTASH_REDIS_REST_TOKEN environment variable is missing.")
+
+if not SUBSCRIPTION_KEY:
+    raise EnvironmentError("SUBSCRIPTION_KEY environment variable is missing.")
+
+if not OPENAI_API_KEY:
+    raise EnvironmentError("OPENAI_API_KEY environment variable is missing.")
+
 
 
 UPSTASH_REDIS_REST_URL = os.getenv("UPSTASH_REDIS_REST_URL", "https://fine-swift-52766.upstash.io")
@@ -31,7 +38,9 @@ except ImportError:
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 # Replace the path to the credentials file with an environment variable
 CREDENTIALS_FILE = os.getenv("GCP_CREDENTIALS_JSON")
-
+if not CREDENTIALS_JSON:
+    raise EnvironmentError("GCP_CREDENTIALS_JSON environment variable is missing.")
+    
 DEFAULT_DURATION_MINUTES = 60  # Default meeting duration is set to 1 hour
 def authenticate_user():
     """
