@@ -208,7 +208,9 @@ def save_mom_to_docx(minutes_text):
         return None
 
 # Define the folder where the files will be stored
-app.config['UPLOAD_FOLDER'] = '/tmp/uploads/'
+UPLOAD_FOLDER = '/tmp/uploads/'
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.route('/download_transcript')
 def download_transcript():
@@ -226,37 +228,37 @@ def download_minutes():
         return send_from_directory(app.config['UPLOAD_FOLDER'], "minutes_of_meeting.docx", as_attachment=True)
     return "Failed to generate minutes of meeting file", 500
 
-# Ensure uploads directory exists
-UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'uploads')
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
-
 @app.route('/upload', methods=['POST'])
 def upload_file():
     """
     Handle file upload for meeting audio files, supporting file paths and uploaded files.
     """
-    # Check if a file was uploaded
-    if "audio_file" in request.files:
-        file = request.files["audio_file"]
-        if file.filename == "":
-            return jsonify({"error": "No selected file"}), 400
+    try:
+        # Check if a file was uploaded
+        if "audio_file" in request.files:
+            file = request.files["audio_file"]
+            if file.filename == "":
+                return jsonify({"error": "No selected file"}), 400
 
-        if file:
-            file_path = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)
-            file.save(file_path)
+            if file:
+                file_path = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)
+                file.save(file_path)  # Save file to the uploads directory
+                meeting_info = process_audio_file(file_path)
+                meeting_info_json = json.dumps(meeting_info)
+                return redirect(url_for('home', meeting_info=meeting_info_json))
+        
+        # Check if a file path is provided
+        file_path = request.form.get("file_path")
+        if file_path and os.path.exists(file_path):
             meeting_info = process_audio_file(file_path)
             meeting_info_json = json.dumps(meeting_info)
             return redirect(url_for('home', meeting_info=meeting_info_json))
-    
-    # Check if a file path is provided
-    file_path = request.form.get("file_path")
-    if file_path and os.path.exists(file_path):
-        meeting_info = process_audio_file(file_path)
-        meeting_info_json = json.dumps(meeting_info)
-        return redirect(url_for('home', meeting_info=meeting_info_json))
 
-    return jsonify({"error": "No valid file or file path provided"}), 400
+        return jsonify({"error": "No valid file or file path provided"}), 400
+
+    except Exception as e:
+        logging.error(f"Error in upload_file: {e}")
+        return jsonify({"error": str(e)}), 500
 
 def process_audio_file(file_path):
     """
